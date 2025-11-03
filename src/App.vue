@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <h1>Hello!</h1>
-  </div>
+  <Navigation></Navigation>
 </template>
 
-<script setup></script>
+<script setup>
+import Navigation from '@/components/NavigationComp.vue'
+</script>
 
 <style scoped></style>
