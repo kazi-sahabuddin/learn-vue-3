@@ -7,9 +7,9 @@ import About from '@/views/AboutView.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: Home },
-    { path: '/blogPosts', component: BlogPosts },
-    { path: '/about', component: About },
+    { path: '/', name: 'home', component: Home },
+    { path: '/blogPosts', name: 'blogPosts', component: BlogPosts },
+    { path: '/about', name: 'about', component: About },
   ],
 })
 
