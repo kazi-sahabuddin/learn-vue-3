@@ -1,5 +1,6 @@
 <template>
-  <div class="blog-list-container">
+  <div class="loading" v-if="loading">Loading...</div>
+  <div class="blog-list-container" v-else-if="blogPosts">
     <h2>Blog Posts</h2>
     <div class="blog-post-list">
       <router-link
@@ -11,6 +12,7 @@
       </router-link>
     </div>
   </div>
+  <div class="error" v-else>something went wrong</div>
 </template>
 
 <script setup>
@@ -18,11 +20,18 @@ import api from '@/apis/blogPosts'
 import { onMounted, ref } from 'vue'
 
 const blogPosts = ref([])
+const loading = ref(true)
 
 onMounted(loadBlogPosts)
 
 async function loadBlogPosts() {
-  blogPosts.value = await api.findAll()
+  try {
+    blogPosts.value = await api.findAll()
+  } catch (error) {
+    console.log(error)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 

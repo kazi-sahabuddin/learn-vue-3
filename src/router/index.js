@@ -4,6 +4,8 @@ import Home from '@/views/HomeView.vue'
 import BlogPosts from '@/views/BlogPosts.vue'
 import About from '@/views/AboutView.vue'
 import BlogPost from '@/views/BlogPost.vue'
+import BlogPostsGreeting from '@/views/BlogPostsGreeting.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,9 +15,18 @@ const router = createRouter({
       path: '/blogPosts',
       name: 'blogPosts',
       component: BlogPosts,
-      children: [{ path: '/blogPosts/:id', name: 'blogPost', component: BlogPost }],
+      redirect: { name: 'blogPostsGreeting' },
+      children: [
+        { path: '', name: 'blogPostsGreeting', component: BlogPostsGreeting },
+        { path: '/blogPosts/:id(\\d+)', name: 'blogPost', component: BlogPost },
+      ],
     },
     { path: '/about', name: 'about', component: About },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'notFound',
+      component: NotFound,
+    },
   ],
 })
 

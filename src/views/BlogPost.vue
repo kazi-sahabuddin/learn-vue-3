@@ -1,25 +1,41 @@
 <template>
-  <div class="blog-post-container" v-if="blogPost">
+  <div class="loading" v-if="loading">Loading...</div>
+  <div class="blog-post-container" v-else-if="blogPost">
     <div>Blog Id: {{ $route.params.id }}</div>
     <h1 class="blog-title">{{ blogPost.title }}</h1>
     <div class="blog-content">
       <p>{{ blogPost.content }}</p>
     </div>
   </div>
+  <div v-else>something went wrong</div>
 </template>
 
 <script setup>
 import api from '@/apis/blogPosts'
-import { onMounted, ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const blogPost = ref([])
 const route = useRoute()
+const loading = ref(true)
 
-onMounted(() => loadBlogPost(route.params.id))
+watch(
+  () => route.params.id,
+  (newId, oldId) => {
+    console.log(oldId)
+    loadBlogPost(newId)
+  },
+  { immediate: true },
+)
 
 async function loadBlogPost(id) {
-  blogPost.value = await api.findById(id)
+  try {
+    blogPost.value = await api.findById(id)
+  } catch (error) {
+    console.log(error)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
