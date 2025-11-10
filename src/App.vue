@@ -1,6 +1,8 @@
 <template>
-  <Navigation></Navigation>
-  <router-view></router-view>
+  <div class="app">
+    <Navigation></Navigation>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script setup>
