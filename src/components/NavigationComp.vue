@@ -2,11 +2,26 @@
   <nav>
     <router-link :to="{ name: 'home' }">Home</router-link>
     <router-link :to="{ name: 'blogPosts' }">Blog Posts</router-link>
-    <router-link :to="{ name: 'about' }">About</router-link>
+    <!-- <router-link :to="{ name: 'about' }">About</router-link> -->
+    <a
+      href="#"
+      @click.prevent="goToAbout"
+      :class="{ 'router-link-active': $route.name === 'about' }"
+    >
+      About</a
+    >
   </nav>
 </template>
 
-<script setup></script>
+<script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function goToAbout() {
+  router.push({ name: 'about' })
+}
+</script>
 
 <style lang="scss" scoped>
 nav {
