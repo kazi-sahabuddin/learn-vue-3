@@ -8,42 +8,60 @@ import BlogPostsGreeting from '@/views/BlogPostsGreeting.vue'
 import NotFound from '@/views/NotFound.vue'
 import AdsView from '@/views/AdsView.vue'
 import LogIn from '@/views/LogIn.vue'
+import MainLayout from '@/views/layout/MainLayout.vue'
+import { isAuthenticated } from '@/apis/auth'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', name: 'home', component: Home },
     {
-      path: '/blog-posts',
-      name: 'blogPosts',
-      component: BlogPosts,
-      redirect: { name: 'blogPostsGreeting' },
+      path: '/',
+      name: 'mainLayout',
+      component: MainLayout,
+      redirect: { name: 'home' },
       children: [
-        { path: '', name: 'blogPostsGreeting', component: BlogPostsGreeting },
+        { path: '/home', name: 'home', component: Home, meta: { requiresAuth: false } },
         {
-          path: ':id(\\d+)',
-          name: 'blogPost',
-          components: {
-            default: BlogPost,
-            sidebar: AdsView,
-          },
+          path: '/blog-posts',
+          name: 'blogPosts',
+          component: BlogPosts,
+          redirect: { name: 'blogPostsGreeting' },
+          children: [
+            {
+              path: '',
+              name: 'blogPostsGreeting',
+              component: BlogPostsGreeting,
+              meta: { requiresAuth: false },
+            },
+            {
+              path: ':id(\\d+)',
+              name: 'blogPost',
+              components: {
+                default: BlogPost,
+                sidebar: AdsView,
+              },
+              meta: { requiresAuth: true },
+            },
+          ],
         },
+        { path: '/about', name: 'about', component: About, meta: { requiresAuth: false } },
       ],
     },
-    { path: '/about', name: 'about', component: About },
-    { path: '/login', name: 'login', component: LogIn },
+
+    { path: '/login', name: 'login', component: LogIn, meta: { requiresAuth: false } },
     {
       path: '/:pathMatch(.*)*',
       name: 'notFound',
       component: NotFound,
+      meta: { requiresAuth: false },
     },
   ],
 })
 
 router.beforeEach((to, from) => {
   console.log(`${from.name} -> ${to.name}`)
-  if (to.name === 'blogPost') {
-    return '/login'
+  if (to.meta.requiresAuth && !isAuthenticated.value) {
+    return { name: 'login', query: { redirectTo: to.fullPath } }
   }
 })
 

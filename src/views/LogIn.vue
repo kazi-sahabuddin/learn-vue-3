@@ -29,13 +29,25 @@
   </div>
 </template>
 <script setup>
+import { logIn } from '@/apis/auth'
 import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const username = ref('')
 const password = ref('')
+const router = useRouter()
+const route = useRoute()
 
-function handleLogin() {
-  console.log('Logging in with', username.value, password.value)
+async function handleLogin() {
+  try {
+    console.log('Logging in with', username.value, password.value)
+    await logIn(username.value, password.value)
+    const redirectTo = route.query.redirectTo || { name: 'home' }
+    router.replace(redirectTo)
+  } catch (error) {
+    console.error('Login failed:', error)
+    alert('Login failed. Please check your credentials and try again.')
+  }
 }
 </script>
 
